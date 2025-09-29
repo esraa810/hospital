@@ -15,7 +15,7 @@ class WalletController extends Controller
 {
     use Response;
 
-//add deposit for wallet 
+//add deposit for wallet
 public function deposit(StoreDeposit $request, string $id)
 {
 $user = auth()->user();
@@ -30,7 +30,7 @@ $wallet->total_price += $data['amount'];
 
 $wallet->save();
 
- Transaction::create([
+Transaction::create([
    'wallet_id'=>$wallet->id,
    'amount'=>$data['amount'],
    'status'=> 1,
@@ -40,7 +40,7 @@ $wallet->save();
                     ->serializeWith(new ArraySerializer())
                     ->toArray();
 
- return $this->responseApi(__('messages.store_deposit'),$wallet,201); 
+ return $this->responseApi(__('messages.store_deposit'),$wallet,201);
 
 }
 
