@@ -10,10 +10,12 @@ use Astrotomic\Translatable\Translatable;
 class Department extends Model implements TranslatableContract
 {
     use Translatable;
-    
+
      public $translatedAttributes = ['name'];
 
     protected $fillable = [];
+    
+    protected $connection = 'tenant';
 
       public function users()
       {

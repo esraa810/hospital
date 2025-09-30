@@ -10,6 +10,7 @@ use App\Traits\Response;
 use App\Transformers\Admin\DepartmentTransform;
 use Illuminate\Http\Request;
 use League\Fractal\Serializer\ArraySerializer;
+use Spatie\Multitenancy\Models\Tenant;
 
 class DepartmentController extends Controller
 {
@@ -20,12 +21,16 @@ class DepartmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    
+
+
 public function index(Request $request)
 {
+        $tenant = Tenant::first();
+        $tenant->makeCurrent();
+
     $search = $request->input('search');
-    $take = $request->input('take'); 
-    $skip = $request->input('skip');  
+    $take = $request->input('take');
+    $skip = $request->input('skip');
     $locale = $request->query('lang', app()->getLocale());
 
     $query = Department::query();
@@ -51,6 +56,9 @@ public function index(Request $request)
 //create
 public function store(StoreDepartment $request)
 {
+    $tenant = Tenant::first();
+    $tenant->makeCurrent();
+
      $data = [
         'en' => ['name' => $request->name_en],
         'ar' => ['name' => $request->name_ar],
@@ -70,7 +78,10 @@ public function store(StoreDepartment $request)
      * Display the specified resource.
      */
     public function show(Request $request,string $id)
-    {     
+    {
+        $tenant = Tenant::first();
+        $tenant->makeCurrent();
+
         $department = Department::findOrFail($id);
 
          $department = fractal()
@@ -90,7 +101,7 @@ public function store(StoreDepartment $request)
     //     $data = $request->validated();
 
     //     $department = Department::findOrFail($id);
-    
+
     //     $department->update([
     //         'name' => $data['name'] ?? $department->name
     //     ]);
@@ -100,6 +111,9 @@ public function store(StoreDepartment $request)
 
  public function update(UpdateDepartment $request, $id)
 {
+        $tenant = Tenant::first();
+        $tenant->makeCurrent();
+
     $data = [
         'en' => ['name' => $request->name_en],
         'ar' => ['name' => $request->name_ar],
@@ -122,18 +136,21 @@ public function store(StoreDepartment $request)
      */
     public function destroy(string $id)
     {
+         $tenant = Tenant::first();
+        $tenant->makeCurrent();
+
         $department = Department::findOrFail($id);
 
         if($department->users()->exists())
         {
-            return  $this->responseApi(__('messages.no_delete'),403); 
+            return  $this->responseApi(__('messages.no_delete'),403);
         }
 
         $department->delete();
-        
-        return  $this->responseApi(__('messages.delete_department'),204); 
+
+        return  $this->responseApi(__('messages.delete_department'),204);
     }
 
-    
+
 }
 

@@ -18,7 +18,7 @@ use App\Traits\Response;
 use App\Transformers\front\UserTransform;
 use Carbon\Carbon;
 use League\Fractal\Serializer\ArraySerializer;
-
+use Spatie\Multitenancy\Models\Tenant;
 
 class AuthController extends Controller
 {
@@ -29,15 +29,18 @@ class AuthController extends Controller
    //register
     public function register(RegisterRequest $request)
     {
+          $tenant = Tenant::where('domain', request()->getHost())->firstOrFail();
+          $tenant->makeCurrent();
+
     $data = $request->validated();
 
     if($request->hasfile('image'))
         {
         $data['image'] = $this->uploadFile($request->image,'assets/images');
-        
+
         }
- 
-     $data['password'] = Hash::make($data['password']);  
+
+     $data['password'] = Hash::make($data['password']);
 
      $user = User::create($data);
 
@@ -47,7 +50,7 @@ class AuthController extends Controller
 
     }
 
-    
+
 //login
 public function login(LoginRequest $request)
 {
@@ -61,12 +64,12 @@ public function login(LoginRequest $request)
    {
     return $this->responseApi(__('messages.invalid credintials'));
    }
-   if ($user->trashed()) 
+   if ($user->trashed())
    {
     return $this->responseApi(__('messages.account_deleted'));
    }
 
-if ($user->is_verified !== 1) 
+if ($user->is_verified !== 1)
 {
     return $this->responseApi(__('messages.verify'));
 }
@@ -96,8 +99,8 @@ public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
         return $this->responseApi(__('messages.logout_all'));
-    }  
-      
+    }
+
 }
     //send otp
     public function sendotp(SendOtp $request)
@@ -108,11 +111,11 @@ public function logout(Request $request)
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) 
+        if (!$user)
         {
             return $this->responseApi(__('messages.not_found'),404);
         }
- 
+
         $otp = rand(1000, 9999);
 
         $otp = Otp::create([
@@ -121,12 +124,12 @@ public function logout(Request $request)
            'expires_at'=> Carbon::now()->addMinutes(3),
            'usage'=>$usage,
         ]);
-  
+
         return $this->responseApi(__('messages.sendotp'), 200);
     }
 
 
-//verify mail 
+//verify mail
 public function verifyEmailOtp(VerifyEmailOtp $request)
 {
    $request->validated();
@@ -135,7 +138,7 @@ public function verifyEmailOtp(VerifyEmailOtp $request)
                   ->where('email', $request->email)
                   ->first();
 
-    if (!$user) 
+    if (!$user)
     {
         return $this->responseApi(__('messages.not_found'), 404);
     }
@@ -152,15 +155,15 @@ public function verifyEmailOtp(VerifyEmailOtp $request)
 
     if(!$otp)
     {
-        return $this->responseApi(__('messages.invalid_otp'),400);   
+        return $this->responseApi(__('messages.invalid_otp'),400);
     }
 
         $user->update(['is_verified'=>true]);
-       
+
         $otp->update(['usage' => 'verify']);
-     
+
      return $this->responseApi(__('messages.verify_otp'), 200);
-     
+
 }
 
 //reset password
@@ -172,12 +175,12 @@ public function resetpassword(ResetPassword $request)
                  ->where('email', $request->email)
                  ->first();
 
-    if (!$user) 
+    if (!$user)
     {
         return $this->responseApi(__('messages.not_found'),404);
     }
 
-    if ($user->trashed()) 
+    if ($user->trashed())
     {
         return $this->responseApi(__('messages.account_deleted'), 403);
     }
@@ -187,7 +190,7 @@ public function resetpassword(ResetPassword $request)
               ->where('expires_at', '>=', now())
               ->first();
 
-    if (!$otp) 
+    if (!$otp)
     {
         return $this->responseApi(__('messages.invalid_otp'), 404);
     }

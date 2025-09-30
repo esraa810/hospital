@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('department_translations', function (Blueprint $table) {
+        Schema::connection('tenant')->create('department_translations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('department_id')->constrained()->onDelete('cascade');
             $table->string('locale')->index();
             $table->string('name');
 
             $table->unique(['department_id','locale']);
-            
+
         });
     }
 

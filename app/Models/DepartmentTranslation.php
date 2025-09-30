@@ -9,6 +9,7 @@ class DepartmentTranslation extends Model
    public $timestamps = false;
 
    protected $connection = 'tenant';
+   
 
    protected $fillable = ['name'];
 

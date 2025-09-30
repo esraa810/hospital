@@ -21,12 +21,15 @@ class User extends Authenticatable implements MustVerifyEmail,HasMedia
     use HasRoles;
     use InteractsWithMedia;
 
-   
+
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
+
+    protected $connection = 'tenant';
+
     protected $fillable = [
         'name',
         'email',
@@ -62,7 +65,7 @@ class User extends Authenticatable implements MustVerifyEmail,HasMedia
         ];
     }
 
-    
+
     public function otps()
     {
         return $this->hasMany(Otp::class);
@@ -72,7 +75,7 @@ class User extends Authenticatable implements MustVerifyEmail,HasMedia
     {
       return $this->belongsTo(Department::class);
     }
-  
+
     public function rates()
     {
       return $this->hasMany(Rate::class);
@@ -82,8 +85,8 @@ class User extends Authenticatable implements MustVerifyEmail,HasMedia
     {
         return $this->hasMany(Report::class);
     }
-    
-   
+
+
      public function certificate()
     {
         return $this->hasMany(Certificate::class);
