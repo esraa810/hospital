@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use League\Fractal\Serializer\ArraySerializer;
 use Spatie\Multitenancy\Models\Tenant;
 
+
 class DepartmentController extends Controller
 {
     /**
@@ -56,6 +57,7 @@ public function index(Request $request)
 //create
 public function store(StoreDepartment $request)
 {
+
     $tenant = Tenant::first();
     $tenant->makeCurrent();
 
@@ -136,7 +138,7 @@ public function store(StoreDepartment $request)
      */
     public function destroy(string $id)
     {
-         $tenant = Tenant::first();
+        $tenant = Tenant::first();
         $tenant->makeCurrent();
 
         $department = Department::findOrFail($id);

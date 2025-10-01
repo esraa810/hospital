@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\front\AuthController;
 use App\Http\Controllers\Api\front\ListController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -41,3 +42,7 @@ Route::middleware('api_localization')->controller(ListController::class)->middle
         Route::get('visits','visits');
 
 });
+
+//users
+Route::post('/users', [UserController::class, 'store']);
+

@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::connection('tenant')->create('users', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id');
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('mobile')->unique();
+            $table->string('mobile')->nullable();
             $table->string('image');
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();

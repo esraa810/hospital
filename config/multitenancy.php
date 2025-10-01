@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Tenant;
 use Spatie\Multitenancy\Jobs\TenantAware;
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Events\CallQueuedListener;
@@ -11,7 +12,6 @@ use Spatie\Multitenancy\Actions\ForgetCurrentTenantAction;
 use Spatie\Multitenancy\Actions\MakeQueueTenantAwareAction;
 use Spatie\Multitenancy\Actions\MakeTenantCurrentAction;
 use Spatie\Multitenancy\Actions\MigrateTenantAction;
-use Spatie\Multitenancy\Models\Tenant;
 use Spatie\Multitenancy\Tasks\SwitchTenantDatabaseTask;
 use Spatie\Multitenancy\TenantFinder\DomainTenantFinder;
 
@@ -51,6 +51,7 @@ return [
      * implement `Spatie\Multitenancy\Contracts\IsTenant::class` interface
      */
     'tenant_model' => Tenant::class,
+
 
     /*
      * If there is a current tenant when dispatching a job, the id of the current tenant

@@ -29,7 +29,7 @@ class AuthController extends Controller
    //register
     public function register(RegisterRequest $request)
     {
-          $tenant = Tenant::where('domain', request()->getHost())->firstOrFail();
+          $tenant = Tenant::first();
           $tenant->makeCurrent();
 
     $data = $request->validated();
